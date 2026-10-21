@@ -2,13 +2,15 @@ import asyncio
 import hashlib
 import json
 import logging
+from pathlib import Path
 import threading
 import time
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import desc, func, select
 from sqlalchemy.orm import Session
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
@@ -488,3 +490,13 @@ def overview(db: Session=Depends(get_db)):
     cats = list(db.execute(select(DetectionRule.name, func.count(DetectionFinding.finding_id)).join(DetectionFinding, DetectionFinding.rule_id == DetectionRule.rule_id).group_by(DetectionRule.name)))
     recent = list(db.scalars(select(Incident).order_by(desc(Incident.updated_at)).limit(6)))
     return {'events_processed': count, 'active_incidents': active, 'high_findings': high, 'detections': [{'name': n, 'count': c} for n, c in cats], 'recent_incidents': [incident_dict(i) for i in recent], 'health': 'operational', 'model': 'cold_start'}
+
+# Serve the compiled console in the single-container public demo; local development
+# continues to use the Vite dev server and its API proxy.
+WEB_DIST = Path(__file__).resolve().parent.parent / 'frontend' / 'dist'
+if WEB_DIST.is_dir():
+    app.mount('/assets', StaticFiles(directory=WEB_DIST / 'assets'), name='frontend-assets')
+
+    @app.get('/', include_in_schema=False)
+    def dashboard():
+        return FileResponse(WEB_DIST / 'index.html')

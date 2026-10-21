@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: sentinel-ai-dashboard
+    runtime: docker
+    plan: free
+    autoDeployTrigger: off
+    healthCheckPath: /ready
+    envVars:
+      - key: SENTINEL_DATABASE_URL
+        value: sqlite:///./sentinel.db
+      - key: SENTINEL_DEMO_TOKEN
+        value: demo-analyst

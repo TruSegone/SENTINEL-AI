@@ -13,7 +13,13 @@ pip install -r requirements.txt
 uvicorn sentinel.main:app --reload
 ```
 
-In another terminal: `cd frontend; npm install; npm run dev`. The UI is at http://localhost:5173 and API docs at http://localhost:8000/docs. Seed synthetic telemetry with `python -m sentinel.seed --count 500`. SQLite database defaults to `./sentinel.db`; set `SENTINEL_DATABASE_URL` to a SQLAlchemy URL for PostgreSQL. No credentials or live telemetry are included.
+In another terminal: `cd frontend; npm install; npm run dev`. Open the [local dashboard](http://localhost:5173) and API docs at http://localhost:8000/docs. Seed synthetic telemetry with `python -m sentinel.seed --count 500`. SQLite database defaults to `./sentinel.db`; set `SENTINEL_DATABASE_URL` to a SQLAlchemy URL for PostgreSQL. No credentials or live telemetry are included.
+
+## Share a browser demo
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2FTruSegone%2FSENTINEL-AI)
+
+Click the button, sign in to Render, and approve the Blueprint. Once deployment finishes, Render provides an `onrender.com` URL that you can share to open the dashboard. The public demo is seeded with synthetic events and uses the public `demo-analyst` identity; response actions only change Sentinel's simulation state. Free instances can sleep when idle, and their local SQLite data is temporary. This is for demos, not production or sensitive data.
 
 This is a demonstration deployment. `SENTINEL_DEMO_TOKEN` defaults to `demo-analyst`; privileged actions require `X-Analyst-Token` and `X-Analyst-Role` (`admin` for approval/execution). This header-based demo identity is not production authentication. Set a unique token before sharing the service. To start the API with PostgreSQL and Redis, copy `.env.example` to `.env`, replace the placeholder `POSTGRES_PASSWORD`, then run `docker compose up --build`; Redis is provisioned for the next worker iteration and is not yet used as an event queue.
 
