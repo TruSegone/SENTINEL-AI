@@ -1,6 +1,10 @@
-# Sentinel AI
+# SEGONE Sentinel
 
-Sentinel AI is a local-first, synthetic-data SOC demonstration. The first release is a modular monolith: FastAPI API, SQLite persistence for zero-setup runs, deterministic processor and replay worker, and a React/Vite analyst console. PostgreSQL and Redis are provided as optional Compose services for deployment-oriented work; SQLite mode is deliberately the easiest demo path. No action adapter contacts a real host or network.
+SEGONE Sentinel — Engineering the next.
+
+See the threat. Understand the impact. Control the response.
+
+SEGONE Sentinel is a local-first, synthetic-data security operations demonstration. The first release is a modular monolith: FastAPI API, SQLite persistence for zero-setup runs, deterministic processor and replay worker, and a React/Vite analyst console. PostgreSQL and Redis are provided as optional Compose services for deployment-oriented work; SQLite mode is deliberately the easiest demo path. No action adapter contacts a real host or network.
 
 ## Run locally
 
@@ -20,6 +24,17 @@ In another terminal: `cd frontend; npm install; npm run dev`. Open the [local da
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2FTruSegone%2FSENTINEL-AI)
 
 Click the button, sign in to Render, and approve the Blueprint. Once deployment finishes, Render provides an `onrender.com` URL that you can share to open the dashboard. The public demo is seeded with synthetic events and uses the public `demo-analyst` identity; response actions only change Sentinel's simulation state. Free instances can sleep when idle, and their local SQLite data is temporary. This is for demos, not production or sensitive data.
+
+## Cloudflare Pages frontend (free-tier demo)
+
+The React frontend can be served from Cloudflare Pages, with Pages Functions forwarding `/api/*`, `/health`, `/ready`, and `/metrics` to the existing FastAPI service. This preserves the current API and SQLite/replay implementation; the API still runs on the Render free service, so this is a Cloudflare-hosted frontend with a free-tier API origin, not an all-Cloudflare backend. Static Pages assets are free; Pages Functions share Workers Free request quotas. Free-tier quotas can change, and the Render API can sleep while idle.
+
+1. Push this repository to GitHub, then create a Pages project connected to the `SENTINEL-AI` repository. Set the repository root as the project root, the production branch to the branch you pushed, build command to `npm --prefix frontend ci && npm --prefix frontend run build`, and output directory to `frontend/dist`.
+2. Deploy the existing `render.yaml` service on Render's free plan, or use an existing API deployment. Copy its HTTPS origin, such as `https://your-service.onrender.com`.
+3. In the Pages project settings, add the runtime variable `SENTINEL_API_ORIGIN` with that origin for both Production and Preview, then redeploy. Do not include a path or trailing API route in the variable.
+4. Share the resulting `*.pages.dev` address. The Pages Function proxies requests to the API, so browser API calls stay on the Pages origin.
+
+To preview the Pages Functions locally, build the frontend, copy `.dev.vars.example` to `.dev.vars`, start the FastAPI service on port 8000, then run `npx wrangler pages dev frontend/dist --binding SENTINEL_API_ORIGIN=http://127.0.0.1:8000`. `.dev.vars` is ignored by Git. Cloudflare Pages deploys the `functions/` directory automatically when connected to Git.
 
 This is a demonstration deployment. `SENTINEL_DEMO_TOKEN` defaults to `demo-analyst`; privileged actions require `X-Analyst-Token` and `X-Analyst-Role` (`admin` for approval/execution). This header-based demo identity is not production authentication. Set a unique token before sharing the service. To start the API with PostgreSQL and Redis, copy `.env.example` to `.env`, replace the placeholder `POSTGRES_PASSWORD`, then run `docker compose up --build`; Redis is provisioned for the next worker iteration and is not yet used as an event queue.
 
@@ -49,7 +64,7 @@ Rule definitions are versioned in `sentinel/detection.py`; each finding stores e
 
 ## Replay, response and operations
 
-Scenario data is deterministic for a seed. Replay creates events one at a time through the same ingestion function. It supports start, pause, resume, cancel and reset, with session progress persisted. Response actions bind a canonical payload hash and expire; execution requires approved state and uses only registered in-memory simulation adapters. Metrics are available at `/metrics`; health/readiness are `/health` and `/ready`. Event APIs are paginated and filterable. The frontend polls API-backed views and uses SSE for event updates.
+Scenario data is deterministic for a seed. The Security signal and service degradation scenario replays failed and successful authentication, a privilege change, and service errors on one synthetic host. It raises a cross-domain finding and attaches the operational evidence to the related investigation with an explicit same-host, temporal-association rationale; this does not claim the security activity caused the service failure. Replay creates events one at a time through the same ingestion function. It supports start, pause, resume, cancel and reset, with session progress persisted. Response actions bind a canonical payload hash and expire; execution requires approved state and uses only registered in-memory simulation adapters. Metrics are available at `/metrics`; health/readiness are `/health` and `/ready`. Event APIs are paginated and filterable. The frontend polls API-backed views and uses SSE for event updates.
 
 ## Development
 

@@ -78,6 +78,15 @@ RULES = [
         "technique_id": None,
         "technique_name": None,
     },
+    {
+        "rule_id": "OPS-SECURITY-DEGRADATION",
+        "name": "Operational degradation after security activity",
+        "version": "1.0",
+        "description": "Service failures follow security telemetry on the same host within ten minutes; temporal association only.",
+        "severity": "high",
+        "technique_id": None,
+        "technique_name": None,
+    },
 ]
 
 
@@ -95,7 +104,7 @@ def _iso(value):
     value = value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
     return value.isoformat()
 
-def _finding(db, rule_id, title, severity, confidence, explanation, events):
+def _finding(db, rule_id, title, severity, confidence, explanation, events, correlate_existing=False):
     ids = [e.event_id for e in events]
     replay_id = events[-1].replay_id
     # Include the replay session in the key so independent runs do not collapse together.
@@ -110,13 +119,25 @@ def _finding(db, rule_id, title, severity, confidence, explanation, events):
     entity = events[-1].username or events[-1].source_ip or events[-1].hostname or 'synthetic-activity'
     # Correlation is by rule and entity; it asserts association, not causation.
     key = f'finding:{rule_id}:{entity}' + (f':replay:{replay_id}' if replay_id else '')
-    incident = db.scalar(select(Incident).where(Incident.correlation_key == key))
+    incident = None
+    if correlate_existing:
+        # Reuse an incident attached to the most recent security event in this evidence set.
+        security_events = [e for e in events if e is not events[-1]]
+        anchor = max(security_events, key=lambda e: e.timestamp) if security_events else None
+        if anchor:
+            link = db.scalar(select(IncidentEvent).where(IncidentEvent.event_id == anchor.event_id))
+            incident = db.get(Incident, link.incident_id) if link else None
+    if not incident:
+        incident = db.scalar(select(Incident).where(Incident.correlation_key == key))
     if not incident:
         incident = Incident(incident_id=str(uuid4()), title=title, severity=severity, status='open', correlation_key=key, summary=explanation, created_at=now(), updated_at=now())
         db.add(incident)
         db.flush()
         db.add(AuditLog(audit_id=str(uuid4()), actor='sentinel-processor', action='incident.opened', object_type='incident', object_id=incident.incident_id, details=explanation))
     finding.incident_id = incident.incident_id
+    if correlate_existing and incident.correlation_key != key:
+        incident.updated_at = now()
+        db.add(AuditLog(audit_id=str(uuid4()), actor='sentinel-processor', action='incident.cross_domain_correlation', object_type='incident', object_id=incident.incident_id, details=json.dumps({'rule_id': rule_id, 'rationale': 'same host; security events preceded service failures within ten minutes; association is not proof of causation'})))
     for e in events:
         if not db.scalar(select(IncidentEvent).where(IncidentEvent.incident_id == incident.incident_id, IncidentEvent.event_id == e.event_id)):
             db.add(IncidentEvent(incident_id=incident.incident_id, event_id=e.event_id))
@@ -156,4 +177,15 @@ def process_event(db, event):
         rows = list(db.scalars(_scope(select(SecurityEvent).where(SecurityEvent.event_category == 'dns', SecurityEvent.source_ip == event.source_ip, SecurityEvent.timestamp >= event.timestamp - timedelta(minutes=5), SecurityEvent.timestamp <= event.timestamp), event).limit(20)))
         if len(rows) >= 4:
             findings.append(_finding(db, 'OUTBOUND-DNS', 'Repeated DNS activity', 'low', 0.55, f'{len(rows)} DNS events from {event.source_ip}; generated test-domain activity only.', rows))
+    if event.event_category.lower() in ('operations', 'operational', 'application') and event.outcome in ('failure', 'error', 'degraded') and event.hostname:
+        start = event.timestamp - timedelta(minutes=10)
+        security = list(db.scalars(_scope(select(SecurityEvent).where(
+            SecurityEvent.event_category.in_(['authentication', 'auth', 'identity', 'process']),
+            SecurityEvent.hostname == event.hostname,
+            SecurityEvent.timestamp >= start,
+            SecurityEvent.timestamp < event.timestamp,
+        ), event).order_by(SecurityEvent.timestamp)))
+        if security:
+            evidence = security + [event]
+            findings.append(_finding(db, 'OPS-SECURITY-DEGRADATION', 'Operational degradation after security activity', 'high', 0.74, f'{event.event_action} followed {len(security)} security event(s) on {event.hostname} within ten minutes; temporal association only.', evidence, correlate_existing=True))
     return findings

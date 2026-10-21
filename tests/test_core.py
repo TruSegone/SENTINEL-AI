@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from sentinel.db import Base
-from sentinel.models import SecurityEvent, DetectionRule, Incident
+from sentinel.models import SecurityEvent, DetectionRule, DetectionFinding, Incident, IncidentEvent
 from sentinel.schemas import EventIn
 from sentinel.detection import seed_rules, process_event
 from sentinel.generator import generate
@@ -73,3 +73,36 @@ def test_anomaly_pipeline_cold_start_and_features_do_not_use_labels():
     items = generate(10)
     assert len(features(items)) == 10 and len(features(items)[0]) == 4
     assert train_score(items[:10], items)['ready'] is False
+
+def test_security_events_then_service_degradation_share_investigation_with_explicit_rationale():
+    db = db_session()
+    seed_rules(db)
+    scenario = generate(11, seed=101, scenario_id='security-ops-correlated')
+    assert len(scenario) == 11
+    for payload in scenario:
+        event = persist(db, payload)
+        process_event(db, event)
+        db.commit()
+
+    privilege = db.query(DetectionFinding).filter_by(rule_id='PRIV-CHANGE').one()
+    operational = db.query(DetectionFinding).filter_by(rule_id='OPS-SECURITY-DEGRADATION').first()
+    assert operational is not None
+    assert operational.incident_id == privilege.incident_id
+    linked_ids = {
+        link.event_id
+        for link in db.query(IncidentEvent).filter_by(incident_id=operational.incident_id).all()
+    }
+    assert set(operational.evidence_ids and json.loads(operational.evidence_ids)) <= linked_ids
+    assert scenario[7].event_id in linked_ids
+
+def test_degradation_on_an_unrelated_host_is_not_correlated():
+    db = db_session()
+    seed_rules(db)
+    scenario = generate(8, seed=102, scenario_id='security-ops-correlated')
+    for payload in scenario[:7]:
+        process_event(db, persist(db, payload))
+        db.commit()
+    unrelated = scenario[7].model_copy(update={'hostname': 'lab-unrelated-99'})
+    process_event(db, persist(db, unrelated))
+    db.commit()
+    assert db.query(DetectionFinding).filter_by(rule_id='OPS-SECURITY-DEGRADATION').count() == 0

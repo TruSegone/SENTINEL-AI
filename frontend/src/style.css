@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
-  font-family: 'DM Sans',sans-serif;
-  color: #e5ebf2;
-  background: #0b0f15;
+  font-family: 'Inter',sans-serif;
+  color: #F5F7FC;
+  background: #080B14;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   font-smooth: always;
@@ -17,7 +17,7 @@ body {
   margin: 0;
   min-width: 820px;
   min-height: 100vh;
-  background: radial-gradient(ellipse at 60% -20%,#16202a 0,transparent 38%),#0b0f15
+  background: radial-gradient(ellipse at 60% -20%,#17213b 0,transparent 38%),#080B14
 }
 button,input,select {
   font: inherit
@@ -54,11 +54,11 @@ button {
   display: grid;
   place-items: center;
   color: #57d6c3;
-  background: linear-gradient(145deg,#183b40,#142b31);
-  border: 1px solid #23524f
+  background: linear-gradient(145deg,#193781,#15234d);
+  border: 1px solid #315CFF
 }
 .brand b {
-  font: 800 14px Manrope;
+  font: 800 14px Space Grotesk;
   letter-spacing: 1.4px;
   color: #edf4fa
 }
@@ -67,7 +67,7 @@ button {
 }
 .brand small {
   display: block;
-  font: 500 8px 'DM Mono';
+  font: 500 8px 'IBM Plex Mono';
   letter-spacing: 1.25px;
   color: #748293;
   margin-top: 3px
@@ -82,7 +82,7 @@ button {
   align-items: center;
   gap: 8px;
   color: #8493a3;
-  font: 10px 'DM Mono';
+  font: 10px 'IBM Plex Mono';
   letter-spacing: .3px
 }
 .workspace svg {
@@ -124,12 +124,12 @@ button {
   color: #e7eff6
 }
 .nav.active {
-  background: linear-gradient(90deg,#183d3b,#152a30);
-  color: #6cd5c5;
-  box-shadow: inset 2px 0 #52c9b7
+  background: linear-gradient(90deg,#1b2d62,#17213d);
+  color: #9cb2ff;
+  box-shadow: inset 2px 0 #315CFF
 }
 .nav i {
-  font: 10px 'DM Mono';
+  font: 10px 'IBM Plex Mono';
   font-style: normal;
   background: #5d302a;
   color: #ff9c7f;
@@ -175,7 +175,7 @@ button {
 .build {
   display: block;
   color: #606f7f;
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   letter-spacing: .5px;
   margin: 18px 8px 0
 }
@@ -199,7 +199,7 @@ button {
 }
 .crumb {
   color: #7e8c9c;
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   letter-spacing: 1px
 }
 .crumb span {
@@ -207,7 +207,7 @@ button {
   margin: 0 6px
 }
 .topbar h1 {
-  font: 700 22px Manrope;
+  font: 700 22px Space Grotesk;
   margin: 7px 0 0;
   letter-spacing: -.4px
 }
@@ -217,7 +217,7 @@ button {
   align-items: center
 }
 .utc {
-  font: 10px 'DM Mono';
+  font: 10px 'IBM Plex Mono';
   color: #8693a2;
   display: flex;
   align-items: center;
@@ -254,11 +254,11 @@ button {
   color: #9ce4d8;
   display: grid;
   place-items: center;
-  font: 10px 'DM Mono'
+  font: 10px 'IBM Plex Mono'
 }
 .analyst small {
   color: #66cbbd;
-  font: 9px 'DM Mono'
+  font: 9px 'IBM Plex Mono'
 }
 .banner {
   display: flex;
@@ -294,7 +294,7 @@ button {
   border-radius: 4px;
   color: #7dd3c5;
   padding: 4px 7px;
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   white-space: nowrap
 }
 .stats {
@@ -346,7 +346,7 @@ button {
   color: #9aa7b5
 }
 .statValue {
-  font: 700 25px Manrope;
+  font: 700 25px Space Grotesk;
   display: block;
   margin: 14px 0 2px;
   color: #eff4f8;
@@ -376,7 +376,7 @@ button {
   border-bottom: 1px solid #202a35
 }
 .panelHead h2 {
-  font: 600 13px Manrope;
+  font: 600 13px Space Grotesk;
   margin: 0;
   color: #e4ebf1
 }
@@ -386,7 +386,7 @@ button {
   font-size: 10px
 }
 .range {
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   letter-spacing: .6px;
   color: #8b9aa9;
   border: 1px solid #2a3541;
@@ -445,7 +445,7 @@ button {
   text-overflow: ellipsis
 }
 .recentRow small {
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   color: #778696;
   display: block;
   margin-top: 4px
@@ -454,7 +454,7 @@ button {
   display: inline-block;
   border-radius: 4px;
   padding: 3px 6px;
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   text-transform: uppercase;
   letter-spacing: .3px;
   white-space: nowrap
@@ -491,7 +491,7 @@ button {
   display: flex;
   align-items: center;
   gap: 6px;
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   color: #78c9b9
 }
 .smallButton,.primary {
@@ -529,7 +529,7 @@ table {
   white-space: nowrap
 }
 th {
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   letter-spacing: .7px;
   color: #718092;
   padding: 11px 14px;
@@ -560,14 +560,14 @@ td b {
   display: block;
   margin-top: 4px;
   color: #738293;
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   max-width: 320px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis
 }
 .mono {
-  font: 10px 'DM Mono';
+  font: 10px 'IBM Plex Mono';
   color: #9caab8
 }
 .category {
@@ -656,7 +656,7 @@ td b {
   border: 1px solid #34414d;
   padding: 4px 7px;
   border-radius: 4px;
-  font: 9px 'DM Mono'
+  font: 9px 'IBM Plex Mono'
 }
 .state.pending {
   color: #eac674;
@@ -700,12 +700,12 @@ td b {
   min-width: 0
 }
 .subPanel h3 {
-  font: 600 11px Manrope;
+  font: 600 11px Space Grotesk;
   margin: 0 0 13px;
   color: #dbe5ec
 }
 .subPanel h3 span {
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   color: #8190a0;
   float: right
 }
@@ -736,7 +736,7 @@ td b {
   display: block
 }
 .evidence small {
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   color: #7e8d9c
 }
 .evidence b {
@@ -755,7 +755,7 @@ td b {
   margin: 4px 0
 }
 .evidence code {
-  font: 8px 'DM Mono';
+  font: 8px 'IBM Plex Mono';
   color: #617283;
   overflow-wrap: anywhere
 }
@@ -764,7 +764,7 @@ td b {
   gap: 5px;
   align-items: center;
   color: #74cbbc;
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   background: #172a2a;
   padding: 6px;
   border-radius: 4px
@@ -776,7 +776,7 @@ td b {
   margin: 14px 0
 }
 .subPanel h4 {
-  font: 600 10px Manrope;
+  font: 600 10px Space Grotesk;
   color: #91a1af;
   margin: 14px 0 5px
 }
@@ -816,7 +816,7 @@ td b {
   padding: 5px 8px;
   border: 1px solid;
   border-radius: 5px;
-  font: 9px 'DM Mono'
+  font: 9px 'IBM Plex Mono'
 }
 .eventNode {
   color: #81cfc0;
@@ -840,7 +840,7 @@ td b {
 }
 .edge {
   color: #687a89;
-  font: 8px 'DM Mono'
+  font: 8px 'IBM Plex Mono'
 }
 .graphLegend {
   display: flex;
@@ -886,7 +886,7 @@ td b {
   margin-top: -42px
 }
 .scenario h2 {
-  font: 600 14px Manrope;
+  font: 600 14px Space Grotesk;
   margin: 0 0 7px
 }
 .scenario p {
@@ -896,7 +896,7 @@ td b {
   min-height: 34px
 }
 .expected {
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   color: #728494;
   border-top: 1px solid #26313c;
   padding: 12px 0
@@ -912,7 +912,7 @@ td b {
   align-items: end
 }
 .replayControls label,.rolePicker {
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   color: #8292a1
 }
 .replayControls select,.rolePicker select {
@@ -945,7 +945,7 @@ td b {
 .progressMeta {
   margin: 7px 16px;
   color: #8695a4;
-  font: 9px 'DM Mono'
+  font: 9px 'IBM Plex Mono'
 }
 /* Human approval and simulation-only response cards. */
 .responseGrid {
@@ -969,7 +969,7 @@ td b {
   color: #6bcbbb
 }
 .actionCard h3 {
-  font: 600 12px Manrope;
+  font: 600 12px Space Grotesk;
   text-transform: capitalize;
   margin: 12px 0 6px
 }
@@ -983,14 +983,14 @@ td b {
 }
 .target b {
   color: #c8d5dd;
-  font: 10px 'DM Mono'
+  font: 10px 'IBM Plex Mono'
 }
 .actionMeta {
   display: flex;
   justify-content: space-between;
   border-top: 1px solid #26313a;
   padding-top: 10px;
-  font: 8px 'DM Mono';
+  font: 8px 'IBM Plex Mono';
   color: #718090
 }
 .actionMeta b {
@@ -1008,7 +1008,7 @@ td b {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   color: #78c5a9;
-  font: 8px 'DM Mono';
+  font: 8px 'IBM Plex Mono';
   margin-top: 8px
 }
 .emptyCard {
@@ -1033,11 +1033,11 @@ td b {
   align-items: center
 }
 .ruleId {
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   color: #6ec9b9
 }
 .rule h3 {
-  font: 600 11px Manrope;
+  font: 600 11px Space Grotesk;
   margin: 11px 0 5px
 }
 .rule p {
@@ -1047,7 +1047,7 @@ td b {
   min-height: 30px
 }
 .rule small {
-  font: 8px 'DM Mono';
+  font: 8px 'IBM Plex Mono';
   color: #758595
 }
 .rule a {
@@ -1091,7 +1091,7 @@ td b {
 }
 .healthRows small {
   color: #788a99;
-  font: 9px 'DM Mono'
+  font: 9px 'IBM Plex Mono'
 }
 .healthRows .statusDot {
   width: 7px
@@ -1104,7 +1104,7 @@ footer {
   text-align: center;
   padding: 19px;
   color: #586777;
-  font: 9px 'DM Mono'
+  font: 9px 'IBM Plex Mono'
 }
 footer span {
   color: #394653;
@@ -1136,11 +1136,11 @@ footer span {
   font-size: 25px
 }
 .drawer h2 {
-  font: 600 17px Manrope;
+  font: 600 17px Space Grotesk;
   margin: 12px 0 5px
 }
 .drawer>p {
-  font: 9px 'DM Mono';
+  font: 9px 'IBM Plex Mono';
   color: #758696;
   overflow-wrap: anywhere
 }
@@ -1155,7 +1155,7 @@ footer span {
   display: block
 }
 .drawerFields small {
-  font: 8px 'DM Mono';
+  font: 8px 'IBM Plex Mono';
   color: #738392;
   margin-bottom: 5px
 }

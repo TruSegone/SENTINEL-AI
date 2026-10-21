@@ -1,1 +1,1 @@
-"""Sentinel AI modular SOC demonstration."""
+"""SEGONE Sentinel modular security operations demonstration."""

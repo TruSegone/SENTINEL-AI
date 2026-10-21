@@ -5,4 +5,8 @@ node_modules/
 dist/
 *.db
 .env
+.dev.vars*
+!.dev.vars.example
+.wrangler/
+*.tsbuildinfo
 *.py[cod]

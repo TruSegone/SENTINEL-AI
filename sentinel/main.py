@@ -39,7 +39,7 @@ logger = logging.getLogger('sentinel')
 EVENTS_ACCEPTED = Counter('sentinel_events_accepted_total', 'Accepted synthetic security events')
 EVENTS_DUPLICATE = Counter('sentinel_events_duplicate_total', 'Duplicate event IDs')
 FINDINGS = Counter('sentinel_findings_total', 'Detection findings created', ['rule'])
-app = FastAPI(title='Sentinel AI', version='1.0.0', description='Synthetic telemetry security operations demonstration')
+app = FastAPI(title='SEGONE Sentinel', version='1.0.0', description='Synthetic telemetry security operations demonstration')
 app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_credentials=False, allow_methods=['GET', 'POST', 'PATCH', 'OPTIONS'], allow_headers=['*'])
 
 # Initialize persistence and seed built-in records before serving requests.
@@ -51,7 +51,7 @@ def startup():
         seed_rules(db)
         if not db.get(ModelMetadata, 'iforest-synthetic-v1'):
             db.add(ModelMetadata(model_id='iforest-synthetic-v1', algorithm='IsolationForest (optional)', version='1.0', feature_schema='["hour_utc","source_frequency","category_code","outcome_code"]', threshold=0.72, trained_at=None, status='cold_start'))
-        defaults = [('credential-chain', 'Credential guessing and follow-up', 'Synthetic repeated login failures followed by success.', 180, ['AUTH-FAIL-BURST', 'AUTH-FAIL-SUCCESS'], 42), ('multi-stage-lab', 'Multi-stage synthetic activity', 'Process and privilege signals across a lab network.', 220, ['PROCESS-UNUSUAL', 'PRIV-CHANGE'], 77)]
+        defaults = [('credential-chain', 'Credential guessing and follow-up', 'Synthetic repeated login failures followed by success.', 180, ['AUTH-FAIL-BURST', 'AUTH-FAIL-SUCCESS'], 42), ('multi-stage-lab', 'Multi-stage synthetic activity', 'Process and privilege signals across a lab network.', 220, ['PROCESS-UNUSUAL', 'PRIV-CHANGE'], 77), ('security-ops-correlated', 'Security signal and service degradation', 'A synthetic authentication sequence and privilege change precede service failures on the same host. Correlation shows timing and shared host only, not proven causation.', 11, ['AUTH-FAIL-BURST', 'AUTH-FAIL-SUCCESS', 'PRIV-CHANGE', 'OPS-SECURITY-DEGRADATION'], 101)]
         for sid, name, desc, count, expected, seed in defaults:
             if not db.get(ReplayScenario, sid):
                 db.add(ReplayScenario(scenario_id=sid, name=name, description=desc, event_count=count, expected_rules=json.dumps(expected), seed=seed))

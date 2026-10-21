@@ -9,6 +9,37 @@ def generate(count=300, seed=7, scenario_id='credential-chain'):
     rng = random.Random(seed)
     start = datetime.now(timezone.utc) - timedelta(minutes=25)
     out = []
+    if scenario_id == 'security-ops-correlated':
+        sequence = [
+            ('authentication', 'login', 'failure', 'high'),
+            ('authentication', 'login', 'failure', 'high'),
+            ('authentication', 'login', 'failure', 'high'),
+            ('authentication', 'login', 'failure', 'high'),
+            ('authentication', 'login', 'failure', 'high'),
+            ('authentication', 'login', 'success', 'low'),
+            ('identity', 'privilege_change', 'success', 'high'),
+            ('operations', 'service_error', 'failure', 'high'),
+            ('operations', 'service_error', 'failure', 'high'),
+            ('operations', 'service_error', 'degraded', 'medium'),
+            ('operations', 'service_recovered', 'success', 'low'),
+        ][:count]
+        for i, (category, action, outcome, severity) in enumerate(sequence):
+            out.append(EventIn(
+                event_id=str(uuid5(NAMESPACE_DNS, f'sentinel:{seed}:{scenario_id}:{i}')),
+                timestamp=start + timedelta(seconds=i * 30),
+                event_category=category,
+                event_action=action,
+                outcome=outcome,
+                severity=severity,
+                source_ip='192.0.2.44',
+                username='demo-admin',
+                hostname='lab-app-02',
+                event_source='synthetic-generator',
+                scenario_id=scenario_id,
+                raw_event={'generator_seed': seed, 'sequence': i},
+                normalized_attributes={'generator': 'sentinel-v1', 'scenario': 'security-operations-correlation'},
+            ))
+        return out
     users = ['analyst01', 'svc-backup', 'buildbot', 'demo-user']
     hosts = ['lab-ws-01', 'lab-app-02', 'lab-db-01', 'lab-jump-01']
     for i in range(count):
